@@ -1,4 +1,4 @@
-package com.example.sygicfencak.ui.theme
+package com.example.sygicfencak.presentation.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
