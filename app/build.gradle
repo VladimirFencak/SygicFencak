@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -69,4 +70,19 @@ dependencies {
 
     //Compose permissions
     implementation "com.google.accompanist:accompanist-permissions:0.24.3-alpha"
+
+    //Ui accompanist (status bar)
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.23.1"
+
+    //maps
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    implementation 'com.google.maps.android:maps-ktx:3.3.0'
+    implementation 'com.google.maps.android:maps-compose:1.2.0'
+
+    secrets {
+        // To add your Maps API key to this project:
+        // 1. Add this line to your local.properties file, where YOUR_API_KEY is your API key:
+        //        MAPS_API_KEY=YOUR_API_KEY
+        defaultPropertiesFileName 'local.properties'
+    }
 }
