@@ -14,10 +14,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.sygicfencak.presentation.map.MapScreen
 import com.example.sygicfencak.presentation.theme.SygicFencakTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import dagger.hilt.android.AndroidEntryPoint
 
-@ExperimentalPermissionsApi
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
