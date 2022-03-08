@@ -11,15 +11,14 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.*
 
 @ExperimentalPermissionsApi
 @Composable
@@ -35,19 +34,21 @@ fun MapScreen(
     val startTracking = remember { mutableStateOf(false) }
 
     Box(Modifier.fillMaxSize()) {
-        val singapore = LatLng(1.35, 103.87)
         val cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(singapore, 10f)
+            position = CameraPosition.fromLatLngZoom(LatLng(1.35, 103.87), 10f)
         }
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState
         ) {
-            Marker(
-                position = singapore,
-                title = "Singapore",
-                snippet = "Marker in Singapore"
-            )
+            viewModel.locationData.value.forEach { location ->
+                Marker(
+                    position = LatLng(location.latitude, location.longitude),
+                    title = location.time.toString(),
+                    snippet = location.latitude.toString()
+                )
+                Polyline(points = viewModel.polylineData)
+            }
         }
 
         Column() {
