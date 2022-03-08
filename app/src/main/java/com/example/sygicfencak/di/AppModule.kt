@@ -7,6 +7,7 @@ import com.example.sygicfencak.data.repository.DataRepositoryImp
 import com.example.sygicfencak.domain.use_case.StartLocationTrackingUseCase
 import com.example.sygicfencak.domain.use_case.StopLocationTrackingUseCase
 import com.example.sygicfencak.domain.repository.DataRepository
+import com.example.sygicfencak.domain.use_case.GetLocationDataUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,8 +30,8 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideDataRepository(@ApplicationContext appContext: Context): DataRepository{
-        return DataRepositoryImp(appContext)
+    fun provideDataRepository(@ApplicationContext appContext: Context, database: LocationDatabase): DataRepository{
+        return DataRepositoryImp(appContext, database.locationDao)
     }
 
     @Provides
@@ -43,5 +44,11 @@ object AppModule {
     @Singleton
     fun provideStopLocationTrackingUseCase(dataRepository: DataRepository): StopLocationTrackingUseCase {
         return StopLocationTrackingUseCase(dataRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetLocationDataUseCase(dataRepository: DataRepository): GetLocationDataUseCase {
+        return GetLocationDataUseCase(dataRepository)
     }
 }

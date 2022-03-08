@@ -3,6 +3,8 @@ package com.example.sygicfencak.presentation.map
 
 import android.Manifest
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -55,6 +57,13 @@ fun MapScreen(
             }
             Button(onClick = { viewModel.stopLocationTracking() }) {
 
+            }
+
+            LazyColumn(){
+                items(viewModel.locationData.value){ location ->
+                    Text(text = location.latitude.toString())
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
             }
         }
 

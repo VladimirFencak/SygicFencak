@@ -9,6 +9,6 @@ import com.example.sygicfencak.domain.model.Location
     version = 1
 )
 abstract class LocationDatabase: RoomDatabase(){
-    abstract val noteDao: LocationDao
+    abstract val locationDao: LocationDao
 
 }

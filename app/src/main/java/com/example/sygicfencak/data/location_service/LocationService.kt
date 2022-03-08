@@ -13,6 +13,7 @@ import com.example.sygicfencak.MainActivity
 import com.example.sygicfencak.domain.model.Location
 import com.example.sygicfencak.domain.repository.DataRepository
 import com.google.android.gms.location.*
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -20,10 +21,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class LocationService : Service() {
 
     @Inject
-    lateinit var repository: DataRepository
+    lateinit var dataRepository: DataRepository
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
@@ -39,6 +41,7 @@ class LocationService : Service() {
     override fun onBind(p0: Intent?): IBinder? = null
 
     override fun onCreate() {
+        super.onCreate()
         Log.e("logujeme","Service OnCreate")
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
@@ -53,7 +56,7 @@ class LocationService : Service() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
-                scope.launch { repository.insertLocation(
+                scope.launch { dataRepository.insertLocation(
                     Location(
                         time = locationResult.lastLocation.time,
                         latitude = locationResult.lastLocation.latitude,
