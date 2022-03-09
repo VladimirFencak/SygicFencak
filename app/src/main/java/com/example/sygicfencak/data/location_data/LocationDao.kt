@@ -14,4 +14,7 @@ interface LocationDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertLocation(location: Location)
+
+    @Query("DELETE FROM location_table")
+    suspend fun deleteLocationCache()
 }

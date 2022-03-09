@@ -8,7 +8,7 @@ import com.example.sygicfencak.domain.model.Location
     entities = [Location::class],
     version = 1
 )
-abstract class LocationDatabase: RoomDatabase(){
+abstract class LocationDatabase : RoomDatabase() {
     abstract val locationDao: LocationDao
 
 }

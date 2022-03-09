@@ -8,6 +8,8 @@ interface DataRepository {
 
     suspend fun insertLocation(location: Location)
 
+    suspend fun deleteLocationCache()
+
     fun startLocationTracking()
 
     fun stopLocationTracking()

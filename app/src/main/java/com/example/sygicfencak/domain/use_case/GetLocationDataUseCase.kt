@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class GetLocationDataUseCase(
     private val dataRepository: DataRepository
 ) {
-    operator fun invoke():Flow<List<Location>>{
+    operator fun invoke(): Flow<List<Location>> {
         return dataRepository.getLocations()
     }
 }

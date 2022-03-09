@@ -1,12 +1,11 @@
 package com.example.sygicfencak.domain.use_case
 
-import android.util.Log
 import com.example.sygicfencak.domain.repository.DataRepository
 
-class StartLocationTrackingUseCase(
+class DeleteLocationCacheUseCase(
     private val dataRepository: DataRepository
 ) {
-    operator fun invoke() {
-        dataRepository.startLocationTracking()
+    suspend operator fun invoke() {
+        dataRepository.deleteLocationCache()
     }
 }

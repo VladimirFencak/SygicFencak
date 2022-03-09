@@ -1,11 +1,11 @@
 package com.example.sygicfencak.presentation.map
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sygicfencak.domain.model.Location
+import com.example.sygicfencak.domain.use_case.DeleteLocationCacheUseCase
 import com.example.sygicfencak.domain.use_case.GetLocationDataUseCase
 import com.example.sygicfencak.domain.use_case.StartLocationTrackingUseCase
 import com.example.sygicfencak.domain.use_case.StopLocationTrackingUseCase
@@ -14,13 +14,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val startLocationTrackingUseCase: StartLocationTrackingUseCase,
     private val stopLocationTrackingUseCase: StopLocationTrackingUseCase,
-    private val getLocationDataUseCase: GetLocationDataUseCase
+    private val getLocationDataUseCase: GetLocationDataUseCase,
+    private val deleteLocationCacheUseCase: DeleteLocationCacheUseCase
 ) : ViewModel() {
 
     private val _locationData = mutableStateOf(listOf<Location>())
@@ -36,14 +38,22 @@ class MapViewModel @Inject constructor(
     }
 
     fun startLocationTracking() {
+        deleteLocationCache()
         startLocationTrackingUseCase()
         getLocationData()
     }
 
     fun stopLocationTracking() {
-        Log.e("logujeme", "view model vypina")
         getLocationDataJob?.cancel()
         stopLocationTrackingUseCase()
+    }
+
+    private fun deleteLocationCache() {
+        _locationData.value = listOf()
+        _polylineData.clear()
+        viewModelScope.launch {
+            deleteLocationCacheUseCase()
+        }
     }
 
     private fun getLocationData() {

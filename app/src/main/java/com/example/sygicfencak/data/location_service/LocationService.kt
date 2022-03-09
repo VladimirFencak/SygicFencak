@@ -42,7 +42,6 @@ class LocationService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.e("logujeme", "Service OnCreate")
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -74,7 +73,6 @@ class LocationService : Service() {
 
     @SuppressLint("MissingPermission")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.e("logujeme", "Service OnStartCommand")
         startForeground(12345, createNotification())
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest, locationCallback, Looper.getMainLooper()
@@ -85,13 +83,11 @@ class LocationService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
-        Log.e("logujeme", "Service onDestroy")
         stopForeground(true)
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
 
     private fun createNotification(): Notification {
-        Log.e("logujeme", "Service notification")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationManager.createNotificationChannel(
                 NotificationChannel(

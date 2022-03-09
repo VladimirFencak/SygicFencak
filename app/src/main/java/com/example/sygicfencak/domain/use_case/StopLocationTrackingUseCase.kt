@@ -6,8 +6,7 @@ import com.example.sygicfencak.domain.repository.DataRepository
 class StopLocationTrackingUseCase(
     private val dataRepository: DataRepository
 ) {
-    operator fun invoke(){
-        Log.e("logujeme","usecase vypina")
+    operator fun invoke() {
         dataRepository.stopLocationTracking()
     }
 }

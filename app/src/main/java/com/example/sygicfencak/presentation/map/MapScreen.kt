@@ -3,13 +3,9 @@ package com.example.sygicfencak.presentation.map
 
 import android.Manifest
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -32,10 +28,16 @@ fun MapScreen(
         )
     )
     val startTracking = remember { mutableStateOf(false) }
+    val isTracking = remember { mutableStateOf(false) }
 
     Box(Modifier.fillMaxSize()) {
         val cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(LatLng(1.35, 103.87), 10f)
+            position = CameraPosition.fromLatLngZoom(
+                LatLng(
+                    viewModel.locationData.value.firstOrNull()?.latitude ?: 48.148598,
+                    viewModel.locationData.value.firstOrNull()?.latitude ?: 17.107748
+                ), 10f
+            )
         }
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
@@ -51,55 +53,73 @@ fun MapScreen(
             }
         }
 
-        Column() {
-            Spacer(modifier = Modifier.height(40.dp))
-            Button(onClick = { startTracking.value=true }) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(20.dp)
+        ) {
+            if (!isTracking.value) {
+                Button(
+                    onClick = {
+                        startTracking.value = true
+                    },
+                    modifier = Modifier.padding(8.dp),
+                    elevation = ButtonDefaults.elevation(),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green),
 
-            }
-            Button(onClick = { viewModel.stopLocationTracking() }) {
-
-            }
-
-            LazyColumn(){
-                items(viewModel.locationData.value){ location ->
-                    Text(text = location.latitude.toString())
-                    Spacer(modifier = Modifier.height(10.dp))
+                    ) {
+                    Text(text = "Start tracking")
                 }
-            }
-        }
-
-        if (startTracking.value) {
-            if (permissionsState.allPermissionsGranted) {
-                Text("access granted")
-                viewModel.startLocationTracking()
-                startTracking.value = false
             } else {
-                val allPermissionsRevoked =
-                    permissionsState.permissions.size == permissionsState.revokedPermissions.size
+                Button(
+                    onClick = {
+                        viewModel.stopLocationTracking()
+                        isTracking.value = false
+                    },
+                    modifier = Modifier.padding(8.dp),
+                    elevation = ButtonDefaults.elevation(),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red),
 
-                val textToShow: String = if (!allPermissionsRevoked) {
-                    "Thank you for access to your approximate location " +
-                            "but we need precise location for training tracking"
-                } else if (permissionsState.shouldShowRationale) {
-                    "We cannot track your training without knowing your location"
-                } else {
-                    "Training tracking requires location permission"
+                    ) {
+                    Text(text = "Stop tracking")
                 }
-
-                AlertDialog(
-                    onDismissRequest = { startTracking.value = false },
-                    text = {
-                        Text(textToShow)
-                    },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            permissionsState.launchMultiplePermissionRequest()
-                            startTracking.value = false
-                        })
-                        { Text(text = "OK") }
-                    },
-                )
             }
         }
     }
+
+    //check permissions and start tracking
+    if (startTracking.value) {
+        if (permissionsState.allPermissionsGranted) {
+            viewModel.startLocationTracking()
+            isTracking.value = true
+            startTracking.value = false
+        } else {
+            val allPermissionsRevoked =
+                permissionsState.permissions.size == permissionsState.revokedPermissions.size
+
+            val textToShow: String = if (!allPermissionsRevoked) {
+                "Thank you for access to your approximate location " +
+                        "but we need precise location for training tracking"
+            } else if (permissionsState.shouldShowRationale) {
+                "We cannot track your training without knowing your location"
+            } else {
+                "Training tracking requires location permission"
+            }
+
+            AlertDialog(
+                onDismissRequest = { startTracking.value = false },
+                text = {
+                    Text(textToShow)
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        permissionsState.launchMultiplePermissionRequest()
+                        startTracking.value = false
+                    })
+                    { Text(text = "OK") }
+                },
+            )
+        }
+    }
 }
+

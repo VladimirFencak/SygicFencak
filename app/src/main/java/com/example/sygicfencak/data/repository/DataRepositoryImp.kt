@@ -1,7 +1,6 @@
 package com.example.sygicfencak.data.repository
 
 import android.content.Context
-import android.util.Log
 import com.example.sygicfencak.data.location_data.LocationDao
 import com.example.sygicfencak.data.location_service.runLocationService
 import com.example.sygicfencak.domain.model.Location
@@ -17,16 +16,18 @@ class DataRepositoryImp(
     }
 
     override suspend fun insertLocation(location: Location) {
-        return dao.insertLocation(location)
+        dao.insertLocation(location)
+    }
+
+    override suspend fun deleteLocationCache() {
+        dao.deleteLocationCache()
     }
 
     override fun startLocationTracking() {
-        Log.e("logujeme","Infrastructure imp zapina")
         runLocationService(true, context)
     }
 
     override fun stopLocationTracking() {
-        Log.e("logujeme","Infrastructure imp vypina")
         runLocationService(false, context)
     }
 

@@ -7,6 +7,7 @@ import com.example.sygicfencak.data.repository.DataRepositoryImp
 import com.example.sygicfencak.domain.use_case.StartLocationTrackingUseCase
 import com.example.sygicfencak.domain.use_case.StopLocationTrackingUseCase
 import com.example.sygicfencak.domain.repository.DataRepository
+import com.example.sygicfencak.domain.use_case.DeleteLocationCacheUseCase
 import com.example.sygicfencak.domain.use_case.GetLocationDataUseCase
 import dagger.Module
 import dagger.Provides
@@ -20,7 +21,7 @@ import javax.inject.Singleton
 object AppModule {
     @Singleton
     @Provides
-    fun provideLocationDatabase(@ApplicationContext appContext: Context): LocationDatabase{
+    fun provideLocationDatabase(@ApplicationContext appContext: Context): LocationDatabase {
         return Room.databaseBuilder(
             appContext,
             LocationDatabase::class.java,
@@ -30,13 +31,16 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideDataRepository(@ApplicationContext appContext: Context, database: LocationDatabase): DataRepository{
+    fun provideDataRepository(
+        @ApplicationContext appContext: Context,
+        database: LocationDatabase
+    ): DataRepository {
         return DataRepositoryImp(appContext, database.locationDao)
     }
 
     @Provides
     @Singleton
-    fun provideStartLocationTrackingUseCase(dataRepository: DataRepository): StartLocationTrackingUseCase{
+    fun provideStartLocationTrackingUseCase(dataRepository: DataRepository): StartLocationTrackingUseCase {
         return StartLocationTrackingUseCase(dataRepository)
     }
 
@@ -50,5 +54,11 @@ object AppModule {
     @Singleton
     fun provideGetLocationDataUseCase(dataRepository: DataRepository): GetLocationDataUseCase {
         return GetLocationDataUseCase(dataRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteLocationCacheUseCase(dataRepository: DataRepository): DeleteLocationCacheUseCase {
+        return DeleteLocationCacheUseCase(dataRepository)
     }
 }
